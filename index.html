@@ -168,8 +168,8 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
         }
 
         .stat-box {
@@ -242,8 +242,13 @@
                 <span class="stat-value" id="canais-count">0</span>
                 <span class="stat-label">Canais Ativos</span>
             </div>
+            <div class="stat-box" id="card-cloud">
+                <span class="stat-value" id="val-cloud">...</span>
+                <span class="stat-label">Nuvem</span>
+            </div>
             <div class="stat-box">
-                <span class="stat-value" id="status-geral">Online</span>
+                <span class="stat-value" id="status-geral"
+                    style="font-size:18px; margin-top:5px; margin-bottom:5px;">ON</span>
                 <span class="stat-label">Sistema</span>
             </div>
         </div>
@@ -320,9 +325,20 @@
         const sleepStatus = urlParams.get('sleep') || 'OFF';
         const canaisAtivos = urlParams.get('canais') || '0';
         const destsExtras = urlParams.get('ext') || '0';
+        const cloudStatus = urlParams.get('cloud') || 'OFF';
 
         // Atualiza a UI com os parâmetros da URL
         document.getElementById('canais-count').innerText = canaisAtivos;
+
+        const valCloud = document.getElementById('val-cloud');
+        if (valCloud) {
+            valCloud.innerText = cloudStatus;
+            if (cloudStatus === 'ON') {
+                valCloud.style.color = 'var(--success-color)';
+            } else {
+                valCloud.style.color = 'var(--hint-color)';
+            }
+        }
 
         const badgeDests = document.getElementById('badge-dests');
         if (badgeDests) {
@@ -340,12 +356,15 @@
         }
 
         const badgeSleep = document.getElementById('badge-sleep');
+        const statusGeral = document.getElementById('status-geral');
         if (sleepStatus === 'ON') {
             badgeSleep.innerText = 'ON';
             badgeSleep.className = 'status-badge status-on';
             document.getElementById('btn-sleep').innerText = 'Desativar Modo Sono';
-            document.getElementById('status-geral').innerText = 'Dormindo';
-            document.getElementById('status-geral').style.color = 'var(--warning-color)';
+            if (statusGeral) {
+                statusGeral.innerText = 'ZZZ';
+                statusGeral.style.color = 'var(--warning-color)';
+            }
         }
 
         // Função para executar comandos via Deep Link
