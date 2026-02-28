@@ -3,392 +3,195 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Warlord OS Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warlord OS</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: var(--tg-theme-bg-color, #ffffff);
-            --text-color: var(--tg-theme-text-color, #000000);
-            --hint-color: var(--tg-theme-hint-color, #999999);
-            --link-color: var(--tg-theme-link-color, #2481cc);
-            --button-color: var(--tg-theme-button-color, #2481cc);
-            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
-            --secondary-bg-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            --header-bg-color: var(--tg-theme-header-bg-color, var(--bg-color));
-
-            --success-color: #34c759;
-            --danger-color: #ff3b30;
-            --warning-color: #ff9500;
+            --bg-color: var(--tg-theme-bg-color, #121212);
+            --text-color: var(--tg-theme-text-color, #ffffff);
+            --card-bg: var(--tg-theme-secondary-bg-color, #1e1e1e);
+            --btn-bg: var(--tg-theme-button-color, #2481cc);
+            --btn-text: var(--tg-theme-button-text-color, #ffffff);
+            --accent: #00d26a;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--secondary-bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
+            align-items: center;
         }
 
         .header {
-            background-color: var(--header-bg-color);
-            padding: 24px 20px;
             text-align: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            margin-bottom: 25px;
         }
 
         .header h1 {
             margin: 0;
             font-size: 24px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, var(--button-color), #8a2be2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 1px;
         }
 
-        .header p {
-            margin: 8px 0 0 0;
+        .header span {
             font-size: 14px;
-            color: var(--hint-color);
-            font-weight: 500;
+            opacity: 0.7;
         }
 
-        .container {
-            padding: 24px 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 25px;
         }
 
         .card {
-            background-color: var(--bg-color);
-            border-radius: 16px;
+            background-color: var(--card-bg);
             padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .card:active {
-            transform: scale(0.98);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-title i {
-            font-size: 20px;
-        }
-
-        .status-badge {
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 20px;
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            opacity: 0.8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .status-on {
-            background-color: rgba(52, 199, 89, 0.15);
-            color: var(--success-color);
+        .card .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent);
         }
 
-        .status-off {
-            background-color: rgba(153, 153, 153, 0.15);
-            color: var(--hint-color);
+        .card .value.off {
+            color: #ff3b30;
         }
 
-        .card-desc {
-            font-size: 14px;
-            color: var(--hint-color);
-            line-height: 1.5;
-            margin: 0;
+        .controls {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .btn {
-            background-color: var(--button-color);
-            color: var(--button-text-color);
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
             border: none;
+            padding: 16px;
             border-radius: 12px;
-            padding: 14px 20px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            width: 100%;
+            transition: transform 0.1s;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
-            transition: opacity 0.2s, transform 0.1s;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .btn:active {
-            opacity: 0.8;
-            transform: translateY(2px);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--button-color);
-            border: 2px solid var(--button-color);
+            transform: scale(0.97);
         }
 
         .btn-danger {
-            background-color: rgba(255, 59, 48, 0.1);
-            color: var(--danger-color);
-            border: 2px solid rgba(255, 59, 48, 0.2);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-box {
-            background-color: var(--bg-color);
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--button-color);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--hint-color);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 12px;
-            color: var(--hint-color);
-            margin-top: auto;
-        }
-
-        /* Tema Escuro Extra Específico (Fallback se var não pegar perfeito) */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #121212;
-            }
-
-            .header,
-            .card,
-            .stat-box {
-                background-color: #1e1e1e;
-                border-color: rgba(255, 255, 255, 0.05);
-            }
-
-            .header h1 {
-                background: linear-gradient(135deg, #4da6ff, #b366ff);
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
+            background-color: #ff3b30;
+            color: white;
         }
     </style>
 </head>
 
 <body>
-
     <div class="header">
-        <h1>Warlord OS</h1>
-        <p>Painel de Controle do Sniper</p>
+        <h1>🎯 WARLORD OS</h1>
+        <span>Centro de Comando Tático</span>
     </div>
 
-    <div class="container">
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <span class="stat-value" id="canais-count">0</span>
-                <span class="stat-label">Canais Ativos</span>
-            </div>
-            <div class="stat-box" id="card-cloud">
-                <span class="stat-value" id="val-cloud">...</span>
-                <span class="stat-label">Nuvem</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-value" id="status-geral"
-                    style="font-size:18px; margin-top:5px; margin-bottom:5px;">ON</span>
-                <span class="stat-label">Sistema</span>
-            </div>
-        </div>
-
+    <div class="grid">
         <div class="card">
-            <div class="card-header">
-                <div class="card-title">🚀 Auto-Forward</div>
-                <div class="status-badge status-off" id="badge-auto">OFF</div>
-            </div>
-            <p class="card-desc">Quando ativado, espelha ofertas automaticamente para os grupos WhatsApp e Newsletter
-                sem depender da seleção manual (botões).</p>
-            <button class="btn" id="btn-auto" onclick="sendCommand('toggle_auto')">
-                Alternar Auto-Forward
-            </button>
+            <h3>Auto-Forward</h3>
+            <div class="value" id="val-auto">...</div>
         </div>
-
         <div class="card">
-            <div class="card-header">
-                <div class="card-title">💤 Modo Sono</div>
-                <div class="status-badge status-off" id="badge-sleep">OFF</div>
-            </div>
-            <p class="card-desc">Pausa o processamento de ofertas (exceto do canal mestre). Ideal para parar envios de
-                madrugada.</p>
-            <button class="btn btn-outline" id="btn-sleep" onclick="sendCommand('toggle_sleep')">
-                Alternar Modo Sono
-            </button>
+            <h3>Sono Manual</h3>
+            <div class="value" id="val-sleep">...</div>
         </div>
-
         <div class="card">
-            <div class="card-header">
-                <div class="card-title">👥 Destinos Extras (WhatsApp)</div>
-                <div class="status-badge status-on" id="badge-dests">0 Extras</div>
-            </div>
-            <p class="card-desc">Adicione grupos ou números extras para receberem as ofertas automaticamente (além do
-                Mestre e da Newsletter).</p>
-            <button class="btn btn-outline" onclick="sendCommand('gerenciar_destinos')">
-                Gerenciar Destinos Extras
-            </button>
+            <h3>Auto Sleep <br><span style="font-size:10px; opacity:0.6;">(00h - 07h30)</span></h3>
+            <div class="value" id="val-autosleep">...</div>
         </div>
-
-        <div class="card" style="border: 1px solid rgba(255, 59, 48, 0.2);">
-            <div class="card-header">
-                <div class="card-title" style="color: var(--danger-color);">🧹 Manutenção</div>
-            </div>
-            <p class="card-desc">Limpa a fila pendente de envios do WhatsApp caso o sistema tenha travado e acumulado
-                muitas mensagens antigas.</p>
-            <button class="btn btn-danger" onclick="sendCommand('limpar_fila')">
-                Limpar Fila do WhatsApp
-            </button>
+        <div class="card">
+            <h3>Cloud API <br><span style="font-size:10px; opacity:0.6;">(Browserless)</span></h3>
+            <div class="value" id="val-cloud">...</div>
         </div>
-
     </div>
 
-    <div class="footer">
-        Warlord Sniper Agent &bull; v2.0
+    <div class="controls">
+        <button class="btn" onclick="executarComando('toggle_auto')">⚡ Alternar Auto-Forward</button>
+        <button class="btn" onclick="executarComando('toggle_sleep')">🌙 Alternar Sono Manual</button>
+        <button class="btn" onclick="executarComando('toggle_autosleep')">⏰ Alternar Auto-Sleep</button>
+        <button class="btn" onclick="executarComando('status')"
+            style="background-color: #323232; border: 1px solid #4a4a4a;">📊 Gerar Relatório Status</button>
+        <button class="btn btn-danger" onclick="executarComando('limpar_fila')">🧹 Esvaziar Fila WhatsApp</button>
+        <button class="btn" onclick="tg.close()"
+            style="background-color: transparent; border: 1px solid var(--btn-bg); color: var(--btn-bg); margin-top: 10px;">Fechar
+            Painel</button>
     </div>
 
     <script>
-        // Init Telegram Web App
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Abre em tela cheia logo de cara
+        tg.expand();
 
-        // Define as cores do tema do Telegram para fallback do CSS
-        document.documentElement.style.setProperty('--bg-color', tg.themeParams.bg_color || '#ffffff');
-        document.documentElement.style.setProperty('--text-color', tg.themeParams.text_color || '#000000');
-        document.documentElement.style.setProperty('--hint-color', tg.themeParams.hint_color || '#999999');
-        document.documentElement.style.setProperty('--button-color', tg.themeParams.button_color || '#2481cc');
-        document.documentElement.style.setProperty('--button-text-color', tg.themeParams.button_text_color || '#ffffff');
-        document.documentElement.style.setProperty('--secondary-bg-color', tg.themeParams.secondary_bg_color || '#f0f0f0');
+        // Leitura Dinâmica dos Parâmetros da URL
+        const params = new URLSearchParams(window.location.search);
+        const auto = params.get('auto') || 'OFF';
+        const sleep = params.get('sleep') || 'OFF';
+        const autosleep = params.get('autosleep') || 'OFF';
+        const cloud = params.get('cloud') || 'OFF';
 
-        // Pega parâmetros da URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const autoStatus = urlParams.get('auto') || 'OFF';
-        const sleepStatus = urlParams.get('sleep') || 'OFF';
-        const canaisAtivos = urlParams.get('canais') || '0';
-        const destsExtras = urlParams.get('ext') || '0';
-        const cloudStatus = urlParams.get('cloud') || 'OFF';
+        // Aplica os valores na interface com cores inteligentes
+        const elAuto = document.getElementById('val-auto');
+        elAuto.innerText = auto;
+        if (auto === 'OFF') elAuto.classList.add('off');
 
-        // Atualiza a UI com os parâmetros da URL
-        document.getElementById('canais-count').innerText = canaisAtivos;
+        const elSleep = document.getElementById('val-sleep');
+        elSleep.innerText = sleep;
+        if (sleep === 'OFF') elSleep.classList.add('off');
 
-        const valCloud = document.getElementById('val-cloud');
-        if (valCloud) {
-            valCloud.innerText = cloudStatus;
-            if (cloudStatus === 'ON') {
-                valCloud.style.color = 'var(--success-color)';
-            } else {
-                valCloud.style.color = 'var(--hint-color)';
-            }
+        const elAutoSleep = document.getElementById('val-autosleep');
+        elAutoSleep.innerText = autosleep;
+        if (autosleep === 'OFF') elAutoSleep.classList.add('off');
+
+        const elCloud = document.getElementById('val-cloud');
+        elCloud.innerText = cloud;
+        if (cloud === 'OFF') elCloud.classList.add('off');
+
+        // Função de Deep Linking (Painel -> Telegram Bot)
+        function executarComando(comando) {
+            // Exige confirmação para ação destrutiva
+            if (comando === 'limpar_fila' && !confirm('Tem certeza que deseja APAGAR a fila do WhatsApp?')) return;
+
+            // O nome do bot DEVE ser configurado pelo usuário no script final
+            const botUsername = "MeuControleRemoto_bot";
+            const link = `https://t.me/${botUsername}?start=${comando}`;
+
+            tg.openTelegramLink(link);
+            tg.close();
         }
-
-        const badgeDests = document.getElementById('badge-dests');
-        if (badgeDests) {
-            badgeDests.innerText = `${destsExtras} Extras`;
-            if (parseInt(destsExtras) === 0) {
-                badgeDests.className = 'status-badge status-off';
-            }
-        }
-
-        const badgeAuto = document.getElementById('badge-auto');
-        if (autoStatus === 'ON') {
-            badgeAuto.innerText = 'ON';
-            badgeAuto.className = 'status-badge status-on';
-            document.getElementById('btn-auto').innerText = 'Desativar Auto-Forward';
-        }
-
-        const badgeSleep = document.getElementById('badge-sleep');
-        const statusGeral = document.getElementById('status-geral');
-        if (sleepStatus === 'ON') {
-            badgeSleep.innerText = 'ON';
-            badgeSleep.className = 'status-badge status-on';
-            document.getElementById('btn-sleep').innerText = 'Desativar Modo Sono';
-            if (statusGeral) {
-                statusGeral.innerText = 'ZZZ';
-                statusGeral.style.color = 'var(--warning-color)';
-            }
-        }
-
-        // Função para executar comandos via Deep Link
-        function sendCommand(commandData) {
-            // Vibração Haptic
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('medium');
-            }
-
-            // O nome do bot do usuário
-            const botUsername = 'MeuControleRemoto_bot';
-            const deepLink = `https://t.me/${botUsername}?start=${commandData}`;
-
-            // Abre o link que manda o start paramétrico pro bot e fecha o Web App
-            tg.openTelegramLink(deepLink);
-
-            // Atraso maior para garantir que o Telegram Desktop/Android capture o deep link antes do WebApp morrer
-            setTimeout(() => {
-                tg.close();
-            }, 500);
-        }
-
-        // Notifica o Telegram que o app carregou e está pronto
-        tg.ready();
     </script>
 </body>
 
