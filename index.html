@@ -147,6 +147,7 @@
         <button class="btn" onclick="executarComando('status')"
             style="background-color: #323232; border: 1px solid #4a4a4a;">📊 Gerar Relatório Status</button>
         <button class="btn btn-danger" onclick="executarComando('limpar_fila')">🧹 Esvaziar Fila WhatsApp</button>
+        <button class="btn btn-danger" onclick="executarComando('restart_pm2')" style="background-color: #ff3b30; color: white;">🔄 Reiniciar Ecossistema (PM2)</button>
         <button class="btn" onclick="tg.close()"
             style="background-color: transparent; border: 1px solid var(--btn-bg); color: var(--btn-bg); margin-top: 10px;">Fechar
             Painel</button>
@@ -184,6 +185,7 @@
         function executarComando(comando) {
             // Exige confirmação para ação destrutiva
             if (comando === 'limpar_fila' && !confirm('Tem certeza que deseja APAGAR a fila do WhatsApp?')) return;
+            if (comando === 'restart_pm2' && !confirm('Tem certeza que deseja REINICIAR todos os módulos do robô? O sistema cairá por 2 segundos e voltará limpo.')) return;
 
             // O nome do bot DEVE ser configurado pelo usuário no script final
             const botUsername = "MeuControleRemoto_bot";
